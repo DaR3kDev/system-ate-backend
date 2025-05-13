@@ -1,0 +1,212 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String               @id @default(cuid())
+  username           String               @unique
+  name               String?
+  password           String?
+  role               Role?
+  created_at         DateTime             @default(now())
+  updated_at         DateTime             @updatedAt
+  Events             Events[]
+  Delegates          Delegates[]
+  Delegates_Benefits Delegates_Benefits[]
+  Affiliates         Affiliates[]
+}
+
+model Events {
+  id          String     @id @default(cuid())
+  userId      String?
+  title       String     @unique
+  description String
+  event_type  EventsType
+  start       DateTime
+  end         DateTime
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Delegates {
+  id         String          @id @default(cuid())
+  userId     String?
+  sectorId   String?
+  first_name String
+  last_name  String
+  dni        String          @unique
+  is_active  Boolean
+  status     DelegatesStatus
+  phone      String
+  created_at DateTime        @default(now())
+  updated_at DateTime        @updatedAt
+
+  user   User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  sector Sectors? @relation(fields: [sectorId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([sectorId])
+}
+
+model Sectors {
+  id         String   @id @default(cuid())
+  name       String   @unique
+  code       String   @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  Delegates  Delegates[]
+  Affiliates Affiliates[]
+}
+
+model Affiliates {
+  id          String   @id @default(cuid())
+  userId      String?
+  sectorId    String?
+  dni         String   @unique
+  name        String
+  phone       String
+  email       String?
+  address     String?
+  has_child   Boolean
+  has_disable Boolean
+  gender      Gender
+  is_active   Boolean
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  user                 User?                  @relation(fields: [userId], references: [id], onDelete: SetNull)
+  sector               Sectors?               @relation(fields: [sectorId], references: [id], onDelete: SetNull)
+  Children             Children[]
+  Benefit_distribution Benefit_distribution[]
+
+  @@index([userId])
+  @@index([sectorId])
+}
+
+model Children {
+  id           String   @id @default(cuid())
+  affiliatesId String?
+  dni          String   @unique
+  first_name   String
+  last_name    String
+  age          Int
+  birth_date   DateTime
+  has_disable  Boolean
+  gender       Gender
+  is_active    Boolean
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  Affiliates           Affiliates?            @relation(fields: [affiliatesId], references: [id], onDelete: Cascade)
+  Benefit_distribution Benefit_distribution[]
+}
+
+model Delegates_Benefits {
+  id         String   @id @default(cuid())
+  userId     String?
+  benefitId  String?
+  quantity   Float
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user    User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  benefit Benefits? @relation(fields: [benefitId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, benefitId])
+}
+
+model Benefits {
+  id                   String                 @id @default(cuid())
+  name                 String                 @unique
+  type                 BenefitsType
+  age_range            String?
+  stock                Float
+  status               BenefitsStatus
+  is_available         Boolean
+  created_at           DateTime               @default(now())
+  updated_at           DateTime               @updatedAt
+  Delegates_Benefits   Delegates_Benefits[]
+  Benefit_distribution Benefit_distribution[]
+}
+
+model Benefit_distribution {
+  id             String             @id @default(cuid())
+  benefitId      String?
+  affiliateId    String?
+  childId        String?
+  recipient_type RecipientType
+  status         DistributionStatus
+  quantity       Float
+  delivery_date  DateTime
+  notes          String?
+
+  benefit   Benefits?   @relation(fields: [benefitId], references: [id], onDelete: Cascade)
+  affiliate Affiliates? @relation(fields: [affiliateId], references: [id], onDelete: SetNull)
+  child     Children?   @relation(fields: [childId], references: [id], onDelete: SetNull)
+
+  @@index([affiliateId])
+  @@index([childId])
+  @@index([benefitId])
+}
+
+enum Role {
+  ADMIN
+  EMPLOYEE
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum EventsType {
+  WORKSHOP
+  MEETING
+  CONFERENCE
+  SEMINAR
+  CONGRESS
+  CAMPAIGNING
+  OTHER
+}
+
+enum DelegatesStatus {
+  ACTIVE
+  INACTIVE
+  PENDING
+  OTHER
+}
+
+enum BenefitsType {
+  AVAILABLE
+  UNAVAILABLE
+  OTHER
+}
+
+enum BenefitsStatus {
+  AVAILABLE
+  UNAVAILABLE
+  OTHER
+}
+
+enum RecipientType {
+  AFFILIATES
+  CHILDREN
+}
+
+enum DistributionStatus {
+  PENDING
+  PROCESSED
+  DELIVERED
+  FAILED
+  CANCELLED
+  DELAYED
+}
