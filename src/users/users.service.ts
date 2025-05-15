@@ -141,4 +141,10 @@ export class UsersService {
       paginatedResponse,
     );
   }
+
+  async findOne(id: string) {
+    return await this.database.user.findUnique({
+      where: { id },
+    });
+  }
 }
