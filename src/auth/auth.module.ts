@@ -6,9 +6,12 @@ import { AuthController } from './auth.controller';
 import { UsersService } from '../users/users.service';
 import { JwtRefreshStrategy } from './strategy/jwt-refresh.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
+import { UsersModule } from '../users/users.module';
+import { CookieService } from './cookie.service';
 
 @Module({
   imports: [
+    UsersModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
@@ -17,17 +20,14 @@ import { JwtStrategy } from './strategy/jwt.strategy';
         signOptions: { expiresIn: config.get<string>('JWT_EXPIRATION_TOKEN') },
       }),
     }),
-    JwtModule.registerAsync({
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        secret: config.get<string>('JWT_REFRESH_TOKEN'),
-        signOptions: {
-          expiresIn: config.get<string>('JWT_REFRESH_EXPIRATION_TOKEN'),
-        },
-      }),
-    }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, UsersService, JwtRefreshStrategy, JwtStrategy],
+  providers: [
+    AuthService,
+    UsersService,
+    CookieService,
+    JwtStrategy,
+    JwtRefreshStrategy,
+  ],
 })
 export class AuthModule {}
