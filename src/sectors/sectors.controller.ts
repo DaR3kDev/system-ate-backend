@@ -25,10 +25,16 @@ export class SectorsController {
     return await this.sectorsService.create(dto);
   }
 
-  @Get()
+  @Get('paginated')
   @HttpCode(HttpStatus.OK)
   async paginationSector(@Query() dto: PaginationSectorDto) {
     return await this.sectorsService.paginationSectors(dto);
+  }
+
+  @Get('all')
+  @HttpCode(HttpStatus.OK)
+  async getAllSectors() {
+    return await this.sectorsService.getAllSectors();
   }
 
   @Patch(':id')

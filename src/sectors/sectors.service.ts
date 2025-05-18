@@ -124,4 +124,18 @@ export class SectorsService {
       paginatedResponse,
     );
   }
+
+  async getAllSectors(): Promise<ResponseHelper<Partial<Sectors>[]>> {
+    const sectors = await this.database.sectors.findMany({
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    return new ResponseHelper<Partial<Sectors>[]>(
+      'Sectores obtenidos exitosamente',
+      sectors,
+    );
+  }
 }
