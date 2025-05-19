@@ -78,7 +78,7 @@ model Affiliates {
   has_child   Boolean
   has_disable Boolean
   gender      Gender
-  is_active   Boolean
+  is_active   Boolean  @default(true)
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 

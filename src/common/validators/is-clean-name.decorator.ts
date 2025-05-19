@@ -1,7 +1,7 @@
 import {
   registerDecorator,
-  ValidationOptions,
   ValidationArguments,
+  ValidationOptions,
 } from 'class-validator';
 
 export function IsCleanName(validationOptions?: ValidationOptions) {
@@ -12,11 +12,13 @@ export function IsCleanName(validationOptions?: ValidationOptions) {
       propertyName,
       options: validationOptions,
       validator: {
-        validate(value: any, args: ValidationArguments) {
-          return typeof value === 'string' && /^[A-Za-z]+$/.test(value);
+        validate(value: unknown, args: ValidationArguments): boolean {
+          if (typeof value !== 'string') return false;
+          const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+          return regex.test(value);
         },
-        defaultMessage(args: ValidationArguments) {
-          return 'El nombre solo debe contener letras sin espacios ni caracteres especiales.';
+        defaultMessage(args: ValidationArguments): string {
+          return 'El nombre solo debe contener letras y espacios, sin caracteres especiales.';
         },
       },
     });

@@ -40,7 +40,7 @@ export class SectorsService {
       },
     });
 
-    return new ResponseHelper<void>('Sector creado exitosamente', []);
+    return new ResponseHelper<void>('Sector creado exitosamente');
   }
 
   async update(
@@ -78,7 +78,7 @@ export class SectorsService {
       },
     });
 
-    return new ResponseHelper<void>('Sector actualizado exitosamente', []);
+    return new ResponseHelper<void>('Sector actualizado exitosamente');
   }
 
   async delete(id: string): Promise<ResponseHelper<void>> {
@@ -86,7 +86,7 @@ export class SectorsService {
       where: { id },
     });
 
-    return new ResponseHelper<void>('Sector eliminado exitosamente', []);
+    return new ResponseHelper<void>('Sector eliminado exitosamente');
   }
 
   async paginationSectors(

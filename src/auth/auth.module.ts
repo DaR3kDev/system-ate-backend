@@ -13,9 +13,9 @@ import { CookieService } from './cookie.service';
   imports: [
     UsersModule,
     JwtModule.registerAsync({
+      global: true,
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        global: true,
         secret: config.get<string>('JWT_SECRET_TOKEN'),
         signOptions: { expiresIn: config.get<string>('JWT_EXPIRATION_TOKEN') },
       }),

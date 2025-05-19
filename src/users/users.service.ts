@@ -7,7 +7,7 @@ import { PaginationUserDto } from './dto/pagination-user.dto';
 import { ResponseHelper } from '../common/response/response.helper';
 import { PaginationHelper } from '../common/pagination/pagination';
 import { PaginatedResponse } from '../common/pagination/interfaces/pagination.interface';
-import { Prisma, User } from '@prisma/client';
+import { Prisma, Role, User } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -35,7 +35,7 @@ export class UsersService {
       },
     });
 
-    return new ResponseHelper<void>('Usuario creado exitosamente', []);
+    return new ResponseHelper<void>('Usuario creado exitosamente');
   }
 
   async update(
@@ -60,7 +60,7 @@ export class UsersService {
       data: updatedData,
     });
 
-    return new ResponseHelper<void>('Usuario actualizado exitosamente', []);
+    return new ResponseHelper<void>('Usuario actualizado exitosamente');
   }
 
   async delete(id: string): Promise<ResponseHelper<void>> {
@@ -74,7 +74,7 @@ export class UsersService {
       where: { id },
     });
 
-    return new ResponseHelper<void>('Usuario eliminado exitosamente', []);
+    return new ResponseHelper<void>('Usuario eliminado exitosamente');
   }
 
   async toggleActive(id: string): Promise<ResponseHelper<void>> {
@@ -95,7 +95,6 @@ export class UsersService {
       updatedUser.is_active
         ? 'Usuario activado exitosamente'
         : 'Usuario desactivado exitosamente',
-      [],
     );
   }
 
@@ -108,7 +107,7 @@ export class UsersService {
       ...(search && {
         OR: [
           { username: { contains: search, mode: 'insensitive' } },
-          { role: { equals: role as any } },
+          { role: { equals: role as Role } },
         ],
       }),
       ...(role && { role }),
