@@ -12,7 +12,6 @@ import { PaginationAffiliatesDto } from './dto/pagination-affiliates.dto';
 import { PaginatedResponse } from 'src/common/pagination/interfaces/pagination.interface';
 import { PaginationHelper } from 'src/common/pagination/pagination';
 import { AffiliateResponse } from './interfaces/affiliate-response.interface';
-
 @Injectable()
 export class AffiliatesService {
   constructor(private readonly database: DatabaseService) {}
@@ -198,7 +197,6 @@ export class AffiliatesService {
         birth_date,
         has_disable,
         gender,
-        is_active,
       }) => ({
         id,
         dni,
@@ -208,7 +206,6 @@ export class AffiliatesService {
         birth_date,
         has_disable,
         gender,
-        is_active,
       }),
     );
 

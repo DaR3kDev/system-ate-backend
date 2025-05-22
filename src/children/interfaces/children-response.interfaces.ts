@@ -7,5 +7,4 @@ export interface ChildResponse {
   birth_date: Date;
   has_disable: boolean;
   gender: string;
-  is_active: boolean;
 }

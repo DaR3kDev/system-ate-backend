@@ -101,7 +101,6 @@ model Children {
   birth_date   DateTime
   has_disable  Boolean
   gender       Gender
-  is_active    Boolean
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt
 

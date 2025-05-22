@@ -1,34 +1,55 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { ChildrenService } from './children.service';
 import { CreateChildDto } from './dto/create-child.dto';
-import { UpdateChildDto } from './dto/update-child.dto';
+import { PaginationChildrenDto } from './dto/pagination-child.dto';
+import { Autorization } from '../common/decorador/authorization.decorador';
+import { Role } from '@prisma/client';
 
 @Controller('children')
 export class ChildrenController {
   constructor(private readonly childrenService: ChildrenService) {}
 
   @Post()
-  create(@Body() createChildDto: CreateChildDto) {
-    return this.childrenService.create(createChildDto);
+  @HttpCode(HttpStatus.CREATED)
+  @Autorization(Role.ADMIN, Role.EMPLOYEE)
+  async create(@Body() dto: CreateChildDto) {
+    return await this.childrenService.create(dto);
   }
 
   @Get()
-  findAll() {
-    return this.childrenService.findAll();
+  @HttpCode(HttpStatus.OK)
+  async pagination(@Query() dto: PaginationChildrenDto) {
+    return await this.childrenService.paginationChildren(dto);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.childrenService.findOne(+id);
+  @HttpCode(HttpStatus.OK)
+  async findOne(@Param('id') id: string) {
+    return await this.childrenService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateChildDto: UpdateChildDto) {
-    return this.childrenService.update(+id, updateChildDto);
+  @HttpCode(HttpStatus.OK)
+  @Autorization(Role.ADMIN, Role.EMPLOYEE)
+  async update(@Param('id') id: string, @Body() dto: CreateChildDto) {
+    return await this.childrenService.update(id, dto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.childrenService.remove(+id);
+  @HttpCode(HttpStatus.OK)
+  @Autorization(Role.ADMIN)
+  async delete(@Param('id') id: string) {
+    return await this.childrenService.delete(id);
   }
 }

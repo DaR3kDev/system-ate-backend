@@ -11,6 +11,7 @@ import { Gender } from '@prisma/client';
 import { Trim } from '../../common/validators/trim.decorator';
 import { IsCleanName } from '../../common/validators/is-clean-name.decorator';
 import { BooleanStringTransform } from '../../common/validators/boolean-string-transform.decorator';
+import { IsCuid } from '../../common/validators/is-cuid.decorator';
 
 export class CreateAffiliateDto {
   @IsString()
@@ -68,5 +69,6 @@ export class CreateAffiliateDto {
 
   @IsOptional()
   @IsString()
+  @IsCuid()
   sectorId?: string;
 }
